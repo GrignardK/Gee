@@ -32,6 +32,9 @@ func (n *node) matchChildren(part string) []*node {
 
 func (n *node) insert(pattern string, parts []string, height int) {
 	if len(parts) == height {
+		if n.part == parts[len(parts)-1] {
+			panic(n.pattern + "exist same routing :" + n.part)
+		}
 		n.pattern = pattern
 		return
 	}
