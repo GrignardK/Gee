@@ -9,11 +9,11 @@ import (
 type H map[string]interface{}
 
 type Context struct {
-	Writer http.ResponseWriter
-	Req    *http.Request
-	Path   string
-	Method string
-
+	Writer     http.ResponseWriter
+	Req        *http.Request
+	Path       string
+	Method     string
+	Params     map[string]string
 	StatusCode int
 }
 
@@ -23,6 +23,7 @@ func NewContext(w http.ResponseWriter, req *http.Request) *Context {
 		Req:    req,
 		Path:   req.URL.Path,
 		Method: req.Method,
+		Params: make(map[string]string),
 	}
 }
 
@@ -32,6 +33,10 @@ func (c *Context) PostForm(key string) string {
 
 func (c *Context) Query(key string) string {
 	return c.Req.URL.Query().Get(key)
+}
+
+func (c *Context) Param(key string) string {
+	return c.Params[key]
 }
 
 func (c *Context) Status(code int) {
