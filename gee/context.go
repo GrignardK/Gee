@@ -15,6 +15,8 @@ type Context struct {
 	Method     string
 	Params     map[string]string
 	StatusCode int
+	handlers   []HandlerFunc
+	index      int
 }
 
 func NewContext(w http.ResponseWriter, req *http.Request) *Context {
@@ -23,7 +25,17 @@ func NewContext(w http.ResponseWriter, req *http.Request) *Context {
 		Req:    req,
 		Path:   req.URL.Path,
 		Method: req.Method,
-		Params: make(map[string]string),
+		//Params: make(map[string]string),
+		index: -1,
+	}
+}
+
+// 中间件跳转用
+func (c *Context) Next() {
+	c.index++
+	s := len(c.handlers)
+	for ; c.index < s; c.index++ {
+		c.handlers[c.index](c)
 	}
 }
 
